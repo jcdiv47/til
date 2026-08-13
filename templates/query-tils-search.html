@@ -2,56 +2,32 @@
 
 {% block title %}TIL search: {{ q }}{% endblock %}
 
-{% block extra_head %}
-<style>
-input[type=search] {
-    padding: .25em;
-    font-size: 16px;
-    width: 60%;
-}
-
-input[type=submit] {
-    box-sizing: border-box;
-    color: #fff;
-    background-color: #007bff;
-    border-color: #007bff;
-    font-weight: 400;
-    cursor: pointer;
-    text-align: center;
-    vertical-align: middle;
-    border-width: 1px;
-    border-style: solid;
-    padding: .5em 0.8em;
-    font-size: 16px;
-    line-height: 1;
-    border-radius: .25rem;
-}
-pre {
-    white-space: pre-wrap;
-    overflow-wrap: break-word;
-}
-pre strong {
-    background-color: yellow;
-}
-</style>
-{% endblock %}
 {% block body %}
-<h1>TIL search: {{ q }}</h1>
 
-<form action="/tils/search">
-    <p>
+<form class="search" style="margin-top: 0" action="/tils/search">
+    <span class="search-box">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="8"></circle><path d="m21 21-4.3-4.3"></path></svg>
         <input type="search" name="q" value="{{ q }}">
-        <input type="submit" value="Search">
-    </p>
+    </span>
+    <input type="submit" value="Search">
 </form>
 
-{% if q and not rows %}
-    <p><em>No results for "{{ q }}"</em></p>
+{% if q %}
+    <p class="result-count">{{ rows|length }} match{{ "es" if rows|length != 1 else "" }} for &ldquo;{{ q }}&rdquo;</p>
 {% endif %}
-    
+
+{% if q and not rows %}
+    <p class="no-results">Nothing here matches that. Try a single word, or <a href="/all">browse the register</a>.</p>
+{% endif %}
+
+<div class="results">
 {% for til in rows %}
-    <h3><span class="topic"><a href="/{{ til.topic }}">{{ til.topic }}</a></span> <a href="/{{ til.topic }}/{{ til.slug }}">{{ til.title }}</a> - {{ til.created[:10] }}</h3>
-    <pre>{{ highlight(til.snippet)|safe }}</pre>
+    <article class="result">
+        <h2><a href="/{{ til.topic }}/{{ til.slug }}">{{ til.title }}</a></h2>
+        <p class="search-snippet">{{ highlight(til.snippet)|safe }}</p>
+        <p class="entry-meta"><a href="/{{ til.topic }}">{{ til.topic }}</a> &middot; <time>{{ til.created[:10] }}</time></p>
+    </article>
 {% endfor %}
+</div>
 
 {% endblock %}

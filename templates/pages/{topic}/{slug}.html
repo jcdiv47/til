@@ -9,10 +9,10 @@
     {% set raised = raise_404("TIL not found") %}
 {% endif %}
 
-{% block title %}{{ til.title }} | Simon Willison’s TILs{% endblock %}
+{% block title %}{{ til.title }} | Jack's TILs{% endblock %}
 
 {% block extra_head %}
-<link rel="stylesheet" href="https://til.simonwillison.net/static/github-light.css">
+<link rel="stylesheet" href="/static/syntax-dark.css">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:creator" content="@simonw">
 <meta name="twitter:title" content="{{ til.title }}">
@@ -44,21 +44,29 @@ document.addEventListener('DOMContentLoaded', () => {
 {% endblock %}
 
 {% block body %}
+<article class="til">
+<p class="til-meta"><a href="/{{ til.topic }}">{{ til.topic }}</a><span class="tick"></span><time>{{ til.created[:10] }}</time></p>
+
 <h1>{{ til.title }}</h1>
+
+<hr class="hr">
 
 {{ til.html|safe }}
 
+<div class="til-footer">
 {% set related = related_tils(til) %}
 {% if related %}
-  <h3 id="related">Related</h3>
+  <p class="label" id="related">Related</p>
   <ul class="related">
     {% for til in related %}
-    <li><span class="topic">{{ til.topic }}</span> <a href="/{{ til.topic }}/{{ til.slug }}">{{ til.title }}</a> - {{ til.created[:10] }}</li>
+    <li><time>{{ til.created[:10] }}</time><a href="/{{ til.topic }}/{{ til.slug }}">{{ til.title }}</a></li>
     {% endfor %}
   </ul>
 {% endif %}
 
 <p class="created">Created {{ til.created }}{% if til.created != til.updated %}, updated {{ til.updated }} &middot; <a href="{{ til.url|replace("https://github.com/simonw/til/blob/", "https://github.com/simonw/til/commits/") }}">History</a>{% endif %} &middot; <a href="{{ til.url }}">Edit</a></p>
+</div>
+</article>
 
 <script>
 // Add visible # links to all h2+ headings
@@ -92,9 +100,7 @@ document.querySelectorAll('h2,h3,h4,h5,h6').forEach(el => {
   const hashLink = document.createElement('a');
   hashLink.href = '#' + id;
   hashLink.textContent = '#';
-  hashLink.style.textDecoration = 'none';
-  hashLink.style.color = '#b7b3b3';
-  hashLink.style.fontSize = '0.8em';
+  hashLink.className = 'heading-anchor';
 
   el.appendChild(document.createTextNode(' '));
   el.appendChild(hashLink);

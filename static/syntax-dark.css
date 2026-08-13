@@ -1,0 +1,144 @@
+/*!
+ * Syntax colours for this theme, mapped onto the .pl-* classes emitted by
+ * GitHub's Markdown renderer (api.github.com/markdown). Shipped
+ * unconditionally — the site is dark-only, so there is no media query.
+ *
+ * This replaces github-light.css / github-dark.css. GitHub's own palette
+ * (red keywords, purple entities, blue constants) fights the gold, so the
+ * scheme here is the site's own ramp plus the accent, four roles only:
+ *
+ *   gold      var(--accent)          keywords, storage, tags, CSS selectors
+ *   pale gold var(--accent-tint-text) strings, regexes, links
+ *   bright    var(--text)            entity names — functions, classes
+ *   body      var(--text-body)       identifiers, constants, numbers
+ *   muted     var(--muted), italic   comments
+ *
+ * Every colour is a custom property from site.css :root; nothing here
+ * hard-codes one. All five clear 4.5:1 against --surface.
+ *
+ * .pl-* class semantics derived from GitHub's Primer syntax themes.
+ * Copyright (c) 2012 - 2017 GitHub, Inc. Licensed under MIT
+ * (https://github.com/primer/github-syntax-theme-generator/blob/master/LICENSE)
+ */
+
+/* ── Comments ───────────────────────────────────────────────────────────── */
+
+.pl-c /* comment, punctuation.definition.comment, string.comment */ {
+    color: var(--muted);
+    font-style: italic;
+}
+
+.pl-ba /* brackethighlighter.* */,
+.pl-sg /* sublimelinter.gutter-mark */ {
+    color: var(--muted);
+}
+
+/* ── Keywords and structure — the only place gold appears ───────────────── */
+
+.pl-k /* keyword, storage, storage.type */,
+.pl-ent /* entity.name.tag, markup.quote — CSS selectors land here */,
+.pl-ms /* meta.separator */ {
+    color: var(--accent);
+}
+
+/* ── Entity names: functions, classes, decorators ───────────────────────── */
+
+.pl-e /* entity */,
+.pl-en /* entity.name */ {
+    color: var(--text);
+}
+
+/* ── Identifiers, constants, numbers — the body colour, unremarked ─────── */
+
+.pl-c1 /* constant, support, meta.property-name, markup.raw, meta.output */,
+.pl-smi /* variable.parameter.function, storage.modifier, variable.other */,
+.pl-v /* variable */,
+.pl-s .pl-s1 /* string source */,
+.pl-s .pl-v /* string variable */ {
+    color: var(--text-body);
+}
+
+/* ── Strings and regexes ────────────────────────────────────────────────── */
+
+.pl-s /* string */,
+.pl-pds /* punctuation.definition.string, source.regexp */,
+.pl-s .pl-pse .pl-s1 /* string punctuation.section.embedded source */,
+.pl-sr /* string.regexp */,
+.pl-sr .pl-sre /* string.regexp source.ruby.embedded */,
+.pl-sr .pl-sra /* string.regexp string.regexp.arbitrary-repitition */,
+.pl-smw /* sublimelinter.mark.warning */ {
+    color: var(--accent-tint-text);
+}
+
+.pl-sr .pl-cce /* string.regexp constant.character.escape */ {
+    color: var(--accent);
+}
+
+.pl-corl /* constant.other.reference.link, string.other.link */ {
+    color: var(--accent-tint-text);
+    text-decoration: underline;
+}
+
+/* ── Markup (fenced Markdown inside a TIL) ──────────────────────────────── */
+
+.pl-mh /* markup.heading */,
+.pl-mh .pl-en,
+.pl-ml /* markup.list */ {
+    color: var(--accent);
+}
+
+.pl-mi /* markup.italic */ {
+    color: var(--text);
+    font-style: italic;
+}
+
+/* Weight, not a fill — and semibold is the ceiling in this theme. */
+.pl-mb /* markup.bold */ {
+    color: var(--text);
+    font-weight: 600;
+}
+
+/* ── Diffs. The +/- characters carry the meaning; the tint only frames it. */
+
+.pl-mi1 /* markup.inserted, meta.diff.header.to-file */ {
+    color: var(--text);
+    background-color: var(--accent-tint);
+}
+
+.pl-md /* markup.deleted, meta.diff.header.from-file */ {
+    color: var(--muted);
+    background-color: rgba(0, 0, 0, 0.32);
+}
+
+.pl-mc /* markup.changed, punctuation.definition.changed */ {
+    color: var(--accent-tint-text);
+    background-color: rgba(0, 0, 0, 0.2);
+}
+
+.pl-mdr /* meta.diff.range */ {
+    color: var(--accent);
+}
+
+.pl-mi2 /* markup.ignored, markup.untracked */ {
+    color: var(--muted);
+}
+
+/* ── Invalid and broken. Marked by an underline, not by a new hue. ─────── */
+
+.pl-bu /* invalid.broken, invalid.deprecated, message.error */ {
+    color: var(--text);
+    text-decoration: underline dotted;
+    text-underline-offset: 3px;
+}
+
+.pl-ii /* invalid.illegal */,
+.pl-c2 /* carriage-return */ {
+    color: var(--text);
+    background-color: rgba(0, 0, 0, 0.45);
+    text-decoration: underline dotted;
+    text-underline-offset: 3px;
+}
+
+.pl-c2::before /* carriage-return */ {
+    content: "^M";
+}

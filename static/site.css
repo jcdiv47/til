@@ -1,0 +1,835 @@
+/* Jack's TILs — dark-only editorial theme.
+   Cormorant Garamond display over Lora body; colour applied as rule, outline
+   and underline rather than fill. Every token lives in the :root block below;
+   nothing further down hard-codes a colour. */
+
+:root {
+    color-scheme: dark;
+
+    /* Ground: a deep warm near-black. */
+    --bg: #1b1a18;
+    --surface: #262422;
+    --surface-border: #3a3734;
+
+    --border: #33302e;
+    --border-strong: #454240;
+
+    /* Text ramp, brightest to faintest. */
+    --text: #eae7e7;
+    --text-body: #d8d3ce;
+    --text-soft: #b9b4b0;
+    --muted: #9b9797;
+    --faint: #7d7979;
+
+    /* Gold. Only ever a rule, an outline, an underline or a small mark. */
+    --accent: #e1ad66;
+    --accent-hover: #facb8d;
+    --accent-rule: rgba(225, 173, 102, 0.5);
+    --accent-underline: rgba(225, 173, 102, 0.42);
+    --accent-tint: rgba(225, 173, 102, 0.18);
+    --accent-tint-text: #f0d3a3;
+
+    --font-display: "Cormorant Garamond", Georgia, "Times New Roman", serif;
+    --font-body: Lora, Georgia, "Times New Roman", serif;
+    --font-mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas,
+        "Liberation Mono", monospace;
+
+    /* The measure. The wide margins either side of it are the design. */
+    --measure: 680px;
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+
+body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--font-body);
+    font-size: 16px;
+    line-height: 1.78;
+    -webkit-text-size-adjust: 100%;
+    -webkit-font-smoothing: antialiased;
+}
+
+/* Figures set tabular wherever they stand as data — dates, counts, columns —
+   while running prose keeps Lora's proportional text figures. */
+.tnum, time, .count, .created, .entry-meta, .til-meta {
+    font-variant-numeric: tabular-nums;
+    font-feature-settings: "tnum";
+}
+
+a {
+    color: var(--accent);
+    text-decoration: none;
+    border-bottom: 1px solid var(--accent-underline);
+}
+
+a:hover {
+    color: var(--accent-hover);
+    border-bottom-color: var(--accent-hover);
+}
+
+:focus { outline: none; }
+
+:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+}
+
+::selection {
+    background: var(--accent-tint);
+    color: var(--text);
+}
+
+h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-display);
+    font-weight: 400;
+    line-height: 1.14;
+    letter-spacing: -0.015em;
+    margin: 0;
+}
+
+/* ── Navigation ─────────────────────────────────────────────────────────── */
+
+.site-nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    padding: 15px 30px;
+    border-bottom: 1px solid var(--border);
+}
+
+.site-nav .brand {
+    font-family: var(--font-display);
+    font-size: 18px;
+    letter-spacing: 0.01em;
+    color: var(--text);
+    border-bottom: 0;
+}
+
+.site-nav .brand:hover { color: var(--accent); }
+
+.site-nav .feed {
+    display: flex;
+    color: var(--accent);
+    border-bottom: 0;
+}
+
+.site-nav .feed:hover { color: var(--accent-hover); }
+
+/* ── The page column ────────────────────────────────────────────────────── */
+
+section.body {
+    max-width: var(--measure);
+    margin: 0 auto;
+    padding: 76px 20px 84px;
+}
+
+/* The home page opens higher up so the feed is visible without scrolling. */
+section.body:has(.masthead) { padding-top: 40px; }
+
+.kicker {
+    margin: 0 0 18px;
+    font-size: 10px;
+    letter-spacing: 0.24em;
+    text-transform: uppercase;
+    color: var(--muted);
+}
+
+.kicker-accent { color: var(--accent); }
+
+.label {
+    margin: 0 0 14px;
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--muted);
+}
+
+.hr {
+    height: 1px;
+    border: 0;
+    margin: 0;
+    background: var(--border);
+}
+
+/* A hairline parted by a small gold lozenge — the masthead's only ornament. */
+.rule-diamond {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin: 18px 0 16px;
+}
+
+.rule-diamond::before,
+.rule-diamond::after {
+    content: "";
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+}
+
+.rule-diamond span {
+    width: 4px;
+    height: 4px;
+    transform: rotate(45deg);
+    background: var(--accent);
+}
+
+/* ── Home masthead ──────────────────────────────────────────────────────── */
+
+.masthead { text-align: center; }
+
+.masthead .kicker { margin-bottom: 14px; }
+
+.masthead h1 {
+    font-size: 52px;
+    line-height: 1;
+    letter-spacing: -0.02em;
+}
+
+.lede {
+    margin: 0;
+    font-size: 14.5px;
+    line-height: 1.8;
+    color: var(--muted);
+    text-wrap: pretty;
+}
+
+/* ── Search ─────────────────────────────────────────────────────────────── */
+
+.search {
+    display: flex;
+    gap: 8px;
+    margin: 26px 0 0;
+}
+
+.search-box {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    min-height: 42px;
+    padding: 0 12px;
+    border: 1px solid var(--border-strong);
+}
+
+.search-box:focus-within { border-color: var(--accent); }
+
+.search-box svg {
+    flex: none;
+    color: var(--muted);
+}
+
+.search-box input[type=search] {
+    flex: 1;
+    min-width: 0;
+    border: 0;
+    outline: none;
+    background: transparent;
+    color: var(--text);
+    font-family: var(--font-body);
+    font-size: 15px;
+}
+
+.search-box input[type=search]::placeholder { color: var(--faint); }
+
+/* Outlined, never filled. */
+.search input[type=submit] {
+    font-family: var(--font-display);
+    font-size: 16px;
+    line-height: 1.2;
+    padding: 0 22px;
+    color: var(--accent);
+    background: transparent;
+    border: 1px solid var(--accent);
+    border-radius: 0;
+    cursor: pointer;
+}
+
+.search input[type=submit]:hover { background: rgba(225, 173, 102, 0.1); }
+.search input[type=submit]:active { background: rgba(225, 173, 102, 0.18); }
+
+/* ── Topic run ──────────────────────────────────────────────────────────── */
+
+.topics {
+    margin: 34px 0 0;
+    padding-top: 20px;
+    border-top: 1px solid var(--border);
+}
+
+/* Gap, not whitespace, carries the spacing between topics. */
+.topic-run {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 9px 20px;
+    font-size: 14.5px;
+}
+
+.topic-run > span {
+    display: inline-flex;
+    align-items: baseline;
+    gap: 5px;
+}
+
+.topic-run a {
+    color: var(--text);
+    border-bottom: 1px solid var(--accent-underline);
+}
+
+.topic-run a:hover { color: var(--accent); }
+
+.topic-run .count {
+    font-size: 9.5px;
+    color: var(--accent);
+    vertical-align: super;
+}
+
+.topic-run .more {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 12.5px;
+    color: var(--muted);
+    border-bottom: 0;
+}
+
+.topic-run .more:hover { color: var(--accent); }
+
+/* ── Listing entries (home, topic pages) ────────────────────────────────── */
+
+.entry {
+    padding: 30px 0;
+    border-bottom: 1px solid var(--border);
+}
+
+/* The first entry under a section label sits a little tighter to it. */
+.label + .entry { padding-top: 22px; }
+
+.entry-meta {
+    display: flex;
+    align-items: center;
+    gap: 11px;
+    margin: 0 0 9px;
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--muted);
+}
+
+/* The short gold dash between a date and its topic. */
+.entry-meta .tick {
+    width: 16px;
+    height: 1px;
+    background: var(--accent-rule);
+}
+
+/* The topic as a small-caps gold link, not a filled pill. */
+.topic,
+.entry-meta a {
+    letter-spacing: 0.12em;
+    color: var(--accent);
+    border-bottom: 0;
+}
+
+.topic a { color: inherit; border-bottom: 0; }
+.topic:hover,
+.entry-meta a:hover { color: var(--accent-hover); }
+
+.entry-title {
+    margin: 0 0 11px;
+    font-size: 31px;
+    line-height: 1.14;
+    letter-spacing: -0.01em;
+}
+
+.entry-title a {
+    color: var(--text);
+    border-bottom: 0;
+}
+
+.entry-title a:hover {
+    color: var(--text);
+    border-bottom: 1px solid var(--accent-rule);
+}
+
+/* The excerpt comes out of first_paragraph() as its own <p>. */
+.entry p {
+    margin: 0;
+    font-size: 15px;
+    line-height: 1.78;
+    color: var(--text-soft);
+    text-align: justify;
+    hyphens: auto;
+}
+
+.entry p code { font-size: 13px; }
+
+.more-link {
+    margin: 38px 0 0;
+    text-align: center;
+}
+
+.more-link a {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    font-family: var(--font-display);
+    font-size: 17px;
+    padding-bottom: 3px;
+    border-bottom: 1px solid var(--accent-underline);
+}
+
+/* ── Topic page ─────────────────────────────────────────────────────────── */
+
+.chapter h1 {
+    font-size: 60px;
+    line-height: 1;
+    letter-spacing: -0.02em;
+}
+
+.chapter-meta {
+    margin: 18px 0 0;
+    font-size: 13.5px;
+    color: var(--muted);
+}
+
+.chapter + .hr { margin-top: 34px; }
+
+/* On a topic page every entry already carries the topic in its heading. */
+.entry-compact .entry-meta { letter-spacing: 0.12em; }
+
+.entry-compact .entry-title { font-size: 28px; }
+
+/* ── All TILs — the register ────────────────────────────────────────────── */
+
+.register {
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+    margin-top: 46px;
+}
+
+.register-group { padding-top: 14px; border-top: 1px solid var(--accent-rule); }
+
+.register-group h2 {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+    margin: 0 0 12px;
+    font-weight: 600;
+    font-size: 21px;
+    letter-spacing: 0.01em;
+}
+
+.register-group h2 .count {
+    font-family: var(--font-body);
+    font-size: 11px;
+    color: var(--faint);
+}
+
+.register-group ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+}
+
+.register-group li {
+    display: flex;
+    align-items: baseline;
+    gap: 16px;
+}
+
+.register-group time {
+    flex: none;
+    min-width: 72px;
+    font-size: 11px;
+    color: var(--faint);
+}
+
+.register-group a {
+    font-size: 14.5px;
+    color: var(--text-body);
+    border-bottom: 0;
+}
+
+.register-group a:hover {
+    color: var(--text);
+    border-bottom: 1px solid var(--accent-rule);
+}
+
+/* ── Search results ────────────────────────────────────────────────────── */
+
+.result-count {
+    margin: 20px 0 0;
+    font-size: 11.5px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--muted);
+}
+
+.results {
+    margin-top: 32px;
+    border-top: 1px solid var(--border);
+}
+
+.result {
+    padding: 24px 0;
+    border-bottom: 1px solid var(--border);
+}
+
+.result h2 {
+    margin: 0 0 9px;
+    font-size: 26px;
+    line-height: 1.18;
+}
+
+.result h2 a { color: var(--text); border-bottom: 0; }
+.result h2 a:hover { border-bottom: 1px solid var(--accent-rule); }
+
+.result .entry-meta {
+    margin: 10px 0 0;
+    font-size: 10.5px;
+    letter-spacing: 0.14em;
+    color: var(--faint);
+}
+
+/* The FTS snippet keeps its whitespace but reads as prose, not a code block. */
+.search-snippet {
+    margin: 0;
+    font-family: var(--font-body);
+    font-size: 14px;
+    line-height: 1.72;
+    color: var(--text-soft);
+    white-space: pre-wrap;
+    overflow-wrap: break-word;
+}
+
+/* <strong> marks the matched terms. */
+.search-snippet strong {
+    font-weight: inherit;
+    background: var(--accent-tint);
+    color: var(--accent-tint-text);
+    padding: 0 3px;
+}
+
+.no-results {
+    margin: 40px 0 0;
+    font-size: 15px;
+    color: var(--muted);
+}
+
+/* ── A single TIL ──────────────────────────────────────────────────────── */
+
+.til-meta {
+    display: flex;
+    align-items: center;
+    gap: 11px;
+    margin: 0 0 18px;
+    font-size: 11px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--muted);
+}
+
+.til-meta .tick { width: 16px; height: 1px; background: var(--accent-rule); }
+.til-meta a { letter-spacing: 0.14em; border-bottom: 0; }
+
+.til h1 {
+    font-size: 48px;
+    line-height: 1.05;
+    letter-spacing: -0.02em;
+}
+
+.til > .hr { margin: 30px 0 34px; }
+
+/* Long-form body copy. */
+.til p,
+.til li {
+    font-size: 16.5px;
+    line-height: 1.82;
+    color: var(--text-body);
+}
+
+.til p {
+    margin: 0 0 20px;
+    text-align: justify;
+    hyphens: auto;
+}
+
+.til ul, .til ol { margin: 0 0 20px; padding-left: 1.4em; }
+.til li { margin-bottom: 6px; }
+.til li::marker { color: var(--faint); }
+
+/* Headings inside a TIL sit on a gold hairline. */
+.til h2, .til h3, .til h4 {
+    margin: 48px 0 16px;
+    padding-top: 18px;
+    border-top: 1px solid var(--accent-rule);
+    font-weight: 600;
+    line-height: 1.2;
+}
+
+.til h2 { font-size: 25px; }
+.til h3 { font-size: 21px; }
+.til h4 { font-size: 18px; }
+
+/* The generated # anchor beside each heading. */
+.heading-anchor {
+    font-size: 0.7em;
+    color: var(--faint);
+    border-bottom: 0;
+}
+
+.heading-anchor:hover { color: var(--accent); }
+
+.til blockquote {
+    margin: 0 0 24px;
+    padding: 2px 0 2px 20px;
+    border-left: 2px solid var(--accent);
+    color: var(--muted);
+    font-style: italic;
+    font-size: 15.5px;
+    line-height: 1.78;
+}
+
+.til blockquote p {
+    margin: 0 0 10px;
+    font-size: inherit;
+    line-height: inherit;
+    color: inherit;
+    text-align: left;
+}
+
+.til blockquote p:last-child { margin-bottom: 0; }
+
+/* ── Code ──────────────────────────────────────────────────────────────── */
+
+pre, code, kbd, samp { font-family: var(--font-mono); }
+
+code {
+    font-size: 0.85em;
+    background: var(--surface);
+    padding: 1px 5px;
+}
+
+pre {
+    margin: 0 0 24px;
+    background: var(--surface);
+    border: 1px solid var(--surface-border);
+    padding: 18px 20px;
+    font-size: 13px;
+    line-height: 1.65;
+    color: var(--text-body);
+    white-space: pre-wrap;
+    overflow: auto;
+}
+
+pre code {
+    background: none;
+    padding: 0;
+    font-size: inherit;
+}
+
+pre[lang=wide] { white-space: pre; overflow: auto; }
+
+a, pre, code { overflow-wrap: break-word; }
+
+/* ── Language badge ────────────────────────────────────────────────────────
+   A fence that declares a language (```python) comes back from GitHub's
+   Markdown renderer wrapped in <div class="highlight highlight-source-python">.
+   That wrapper takes the frame and a header strip naming the language; the
+   <pre> inside goes borderless. A bare ``` fence has no wrapper and stays a
+   plain bordered <pre> with no badge — which is most older TILs. */
+
+.highlight {
+    margin: 0 0 24px;
+    background: var(--surface);
+    border: 1px solid var(--surface-border);
+}
+
+.highlight > pre {
+    margin: 0;
+    border: 0;
+    padding: 16px 20px 18px;
+}
+
+.highlight::before {
+    content: "code";
+    display: block;
+    padding: 8px 20px;
+    border-bottom: 1px solid var(--surface-border);
+    font-family: var(--font-mono);
+    font-size: 9.5px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--accent);
+    /* The short rule at the right end of the strip. */
+    background-image: linear-gradient(var(--surface-border), var(--surface-border));
+    background-repeat: no-repeat;
+    background-position: right 20px center;
+    background-size: 26px 1px;
+}
+
+/* One rule per language: CSS cannot read a class name, so the label is
+   spelled out. Anything not listed falls back to "code" above. */
+.highlight-source-python::before { content: "python"; }
+.highlight-text-python-console::before { content: "python console"; }
+.highlight-source-sql::before { content: "sql"; }
+.highlight-source-shell::before { content: "shell"; }
+.highlight-text-shell-session::before { content: "console"; }
+.highlight-source-js::before { content: "javascript"; }
+.highlight-source-ts::before { content: "typescript"; }
+.highlight-source-json::before { content: "json"; }
+.highlight-source-yaml::before { content: "yaml"; }
+.highlight-source-toml::before { content: "toml"; }
+.highlight-source-ini::before { content: "ini"; }
+.highlight-source-css::before { content: "css"; }
+.highlight-text-html-basic::before { content: "html"; }
+.highlight-text-xml::before { content: "xml"; }
+.highlight-text-xml-svg::before { content: "svg"; }
+.highlight-text-md::before { content: "markdown"; }
+.highlight-source-diff::before { content: "diff"; }
+.highlight-source-dockerfile::before { content: "dockerfile"; }
+.highlight-source-rust::before { content: "rust"; }
+.highlight-source-go::before { content: "go"; }
+.highlight-source-ruby::before { content: "ruby"; }
+.highlight-source-java::before { content: "java"; }
+.highlight-source-c::before { content: "c"; }
+.highlight-source-graphql::before { content: "graphql"; }
+.highlight-text-html-django::before { content: "template"; }
+
+/* ── Media, rules and tables inside long-form content ──────────────────── */
+
+img { display: block; max-width: 100%; height: auto; }
+
+/* Photographs sit matted, like a tipped-in plate. */
+.til img {
+    margin: 0 0 24px;
+    border: 6px solid var(--surface);
+    outline: 1px solid var(--border);
+}
+
+.til hr {
+    height: 1px;
+    border: 0;
+    margin: 40px 0;
+    background: var(--border);
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 0 0 24px;
+    font-size: 14px;
+}
+
+th, td {
+    padding: 9px 10px;
+    border-bottom: 1px solid var(--border);
+    text-align: left;
+    word-wrap: anywhere;
+}
+
+th {
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--muted);
+}
+
+audio { width: 100%; margin: 0 0 24px; }
+
+/* ── Related + colophon footer ─────────────────────────────────────────── */
+
+.til-footer {
+    margin: 56px 0 0;
+    padding-top: 22px;
+    border-top: 1px solid var(--border);
+}
+
+/* Both of these sit inside .til, so they have to out-specify .til p. */
+.til-footer .label {
+    margin: 0 0 16px;
+    font-size: 10px;
+    line-height: 1.6;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--muted);
+    text-align: left;
+}
+
+ul.related {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 11px;
+}
+
+ul.related li {
+    display: flex;
+    align-items: baseline;
+    gap: 14px;
+    font-size: 14.5px;
+}
+
+ul.related time {
+    flex: none;
+    min-width: 76px;
+    font-size: 11px;
+    color: var(--faint);
+}
+
+ul.related .topic { display: none; }
+
+ul.related a {
+    color: var(--text);
+    border-bottom: 1px solid rgba(225, 173, 102, 0.35);
+}
+
+.created,
+.til .created {
+    margin: 28px 0 0;
+    font-size: 11.5px;
+    line-height: 1.7;
+    color: var(--faint);
+    text-align: left;
+    hyphens: none;
+}
+
+/* ── Narrow screens ───────────────────────────────────────────────────── */
+
+@media (max-width: 640px) {
+    body { font-size: 15.5px; }
+
+    .site-nav { padding: 14px 20px; }
+
+    section.body { padding: 48px 20px 64px; }
+
+    .masthead h1 { font-size: 46px; }
+    .chapter h1 { font-size: 44px; }
+    .til h1 { font-size: 34px; }
+    .entry-title { font-size: 25px; }
+    .entry-compact .entry-title { font-size: 23px; }
+    .result h2 { font-size: 22px; }
+
+    .til p, .til li { font-size: 16px; }
+    .entry p { text-align: left; }
+    .til p { text-align: left; }
+
+    .search { flex-wrap: wrap; }
+    .search-box { flex-basis: 100%; }
+    .search input[type=submit] { min-height: 40px; }
+
+    .register-group li,
+    ul.related li { flex-wrap: wrap; gap: 2px 14px; }
+}

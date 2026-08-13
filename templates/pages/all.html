@@ -1,17 +1,25 @@
 {% extends "til_base.html" %}
 
-{% block title %}Simon Willison: all TILs{% endblock %}
+{% block title %}Jack: all TILs{% endblock %}
 
 {% block body %}
-<h1>Simon Willison: all TILs</h1>
+{% set til_count = sql("select count(*) from TIL", database="tils")[0][0] %}
+{% set topic_count = sql("select count(distinct topic) from til", database="tils")[0][0] %}
 
+<h1>All notes</h1>
+<p class="kicker kicker-accent" style="margin: 16px 0 0">{{ til_count }} notes &middot; {{ topic_count }} topics &middot; newest topic first</p>
+
+<div class="register">
 {% for row in sql("select topic from til group by topic order by max(created_utc) desc", database="tils") %}
-    <h2>{{ row.topic }}</h2>
-    <ul>
-        {% for til in sql("select * from til where topic = :topic order by created_utc desc", {"topic": row.topic}, database="tils") %}
-            <li><a href="/{{ til.topic }}/{{ til.slug }}">{{ til.title }}</a> - {{ til.created[:10] }}</li>
-        {% endfor %}
-    </ul>
+    <div class="register-group">
+        <h2>{{ row.topic }} <span class="count">{{ sql("select count(*) from til where topic = :topic", {"topic": row.topic}, database="tils")[0][0] }}</span></h2>
+        <ul>
+            {% for til in sql("select * from til where topic = :topic order by created_utc desc", {"topic": row.topic}, database="tils") %}
+                <li><time>{{ til.created[:10] }}</time><a href="/{{ til.topic }}/{{ til.slug }}">{{ til.title }}</a></li>
+            {% endfor %}
+        </ul>
+    </div>
 {% endfor %}
+</div>
 
 {% endblock %}
