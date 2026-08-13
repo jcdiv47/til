@@ -8,18 +8,19 @@
 <!-- TODO: point data-domain at the real domain before deploying -->
 <script defer data-domain="til.example.com" src="https://plausible.io/js/plausible.js"></script>
 <link rel="alternate" type="application/atom+xml" title="Atom" href="/tils/feed.atom">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600&family=Lora:ital,wght@0,400;0,600;1,400&display=swap">
+<link rel="icon" type="image/svg+xml" href="/static/favicon.svg">
+<link rel="preload" href="/static/fonts/Geist-Variable.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/static/fonts/GeistMono-Variable.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="/static/site.css">
 {% block extra_head %}{% endblock %}
 </head>
 <body>
+<a class="skip-link" href="#main">Skip to content</a>
 <nav class="site-nav">
     <a class="brand" href="/">Jack's TILs</a>
     <a class="feed" href="/tils/feed.atom" title="Atom feed" aria-label="Atom feed"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M4 11a9 9 0 0 1 9 9"></path><path d="M4 4a16 16 0 0 1 16 16"></path><circle cx="5" cy="19" r="1"></circle></svg></a>
 </nav>
-<section class="body">
+<section class="body" id="main">
 {% block body %}{% endblock %}
 </section>
 </body>

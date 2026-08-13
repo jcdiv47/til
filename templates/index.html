@@ -5,9 +5,7 @@
 {% block body %}
 {% set til_count = sql("select count(*) from TIL", database="tils")[0][0] %}
 <header class="masthead">
-    <p class="kicker kicker-accent">Today I Learned</p>
-    <h1>Jack's TILs</h1>
-    <div class="rule-diamond"><span></span></div>
+    <h1>Today I learned</h1>
     <p class="lede">Short notes on things I worked out and didn't want to work out twice. {{ til_count }} of them, kept in the open at <a href="https://github.com/jcdiv47/til">jcdiv47/til</a>.</p>
 </header>
 

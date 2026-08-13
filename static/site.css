@@ -1,38 +1,58 @@
-/* Jack's TILs — dark-only editorial theme.
-   Cormorant Garamond display over Lora body; colour applied as rule, outline
-   and underline rather than fill. Every token lives in the :root block below;
-   nothing further down hard-codes a colour. */
+/* Jack's TILs — dark dev-notebook theme.
+   Geist for display and body, Geist Mono for metadata and code; cool zinc
+   ground with a single desaturated amber accent. Every token lives in the
+   :root block below; nothing further down hard-codes a colour. */
+
+@font-face {
+    font-family: "Geist";
+    src: url("/static/fonts/Geist-Variable.woff2") format("woff2");
+    font-weight: 100 900;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: "Geist Mono";
+    src: url("/static/fonts/GeistMono-Variable.woff2") format("woff2");
+    font-weight: 100 900;
+    font-display: swap;
+}
 
 :root {
     color-scheme: dark;
 
-    /* Ground: a deep warm near-black. */
-    --bg: #1b1a18;
-    --surface: #262422;
-    --surface-border: #3a3734;
+    /* Ground: a cool near-black, never pure #000. */
+    --bg: #0f1012;
+    --surface: #16181c;
+    --surface-border: #26292f;
 
-    --border: #33302e;
-    --border-strong: #454240;
+    --border: #1e2126;
+    --border-strong: #2d3138;
 
     /* Text ramp, brightest to faintest. */
-    --text: #eae7e7;
-    --text-body: #d8d3ce;
-    --text-soft: #b9b4b0;
-    --muted: #9b9797;
-    --faint: #7d7979;
+    --text: #f1f3f5;
+    --text-body: #d2d6db;
+    --text-soft: #b3b8c0;
+    --muted: #8a9099;
+    --faint: #656b75;
 
-    /* Gold. Only ever a rule, an outline, an underline or a small mark. */
-    --accent: #e1ad66;
-    --accent-hover: #facb8d;
-    --accent-rule: rgba(225, 173, 102, 0.5);
-    --accent-underline: rgba(225, 173, 102, 0.42);
-    --accent-tint: rgba(225, 173, 102, 0.18);
-    --accent-tint-text: #f0d3a3;
+    /* Amber. One accent for the whole site. */
+    --accent: #e3a84e;
+    --accent-hover: #f0c37c;
+    --accent-rule: rgba(227, 168, 78, 0.45);
+    --accent-underline: rgba(227, 168, 78, 0.4);
+    --accent-tint: rgba(227, 168, 78, 0.14);
+    --accent-tint-text: #eed3a6;
 
-    --font-display: "Cormorant Garamond", Georgia, "Times New Roman", serif;
-    --font-body: Lora, Georgia, "Times New Roman", serif;
-    --font-mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas,
-        "Liberation Mono", monospace;
+    /* Solid button: dark text on the accent fill clears WCAG AA. */
+    --accent-contrast: #14100a;
+
+    --font-display: "Geist", system-ui, -apple-system, "Segoe UI", sans-serif;
+    --font-body: "Geist", system-ui, -apple-system, "Segoe UI", sans-serif;
+    --font-mono: "Geist Mono", ui-monospace, SFMono-Regular, "SF Mono", Menlo,
+        Consolas, "Liberation Mono", monospace;
+
+    /* One radius scale for the page: soft-small everywhere. */
+    --radius: 6px;
 
     /* The measure. The wide margins either side of it are the design. */
     --measure: 680px;
@@ -45,14 +65,13 @@ body {
     background: var(--bg);
     color: var(--text);
     font-family: var(--font-body);
-    font-size: 16px;
-    line-height: 1.78;
+    font-size: 15.5px;
+    line-height: 1.7;
     -webkit-text-size-adjust: 100%;
     -webkit-font-smoothing: antialiased;
 }
 
-/* Figures set tabular wherever they stand as data — dates, counts, columns —
-   while running prose keeps Lora's proportional text figures. */
+/* Figures set tabular wherever they stand as data — dates, counts, columns. */
 .tnum, time, .count, .created, .entry-meta, .til-meta {
     font-variant-numeric: tabular-nums;
     font-feature-settings: "tnum";
@@ -62,6 +81,7 @@ a {
     color: var(--accent);
     text-decoration: none;
     border-bottom: 1px solid var(--accent-underline);
+    transition: color 0.15s ease, border-color 0.15s ease;
 }
 
 a:hover {
@@ -74,6 +94,7 @@ a:hover {
 :focus-visible {
     outline: 2px solid var(--accent);
     outline-offset: 2px;
+    border-radius: 2px;
 }
 
 ::selection {
@@ -83,11 +104,27 @@ a:hover {
 
 h1, h2, h3, h4, h5, h6 {
     font-family: var(--font-display);
-    font-weight: 400;
-    line-height: 1.14;
-    letter-spacing: -0.015em;
+    font-weight: 600;
+    line-height: 1.15;
+    letter-spacing: -0.02em;
     margin: 0;
+    text-wrap: balance;
 }
+
+.skip-link {
+    position: absolute;
+    left: 16px;
+    top: -48px;
+    z-index: 10;
+    padding: 8px 14px;
+    background: var(--surface);
+    border: 1px solid var(--border-strong);
+    border-radius: var(--radius);
+    color: var(--text);
+    font-size: 13px;
+}
+
+.skip-link:focus { top: 12px; }
 
 /* ── Navigation ─────────────────────────────────────────────────────────── */
 
@@ -96,14 +133,15 @@ h1, h2, h3, h4, h5, h6 {
     align-items: center;
     justify-content: space-between;
     gap: 20px;
-    padding: 15px 30px;
+    padding: 16px 28px;
     border-bottom: 1px solid var(--border);
 }
 
 .site-nav .brand {
-    font-family: var(--font-display);
-    font-size: 18px;
-    letter-spacing: 0.01em;
+    font-family: var(--font-mono);
+    font-size: 14px;
+    font-weight: 500;
+    letter-spacing: -0.01em;
     color: var(--text);
     border-bottom: 0;
 }
@@ -112,40 +150,35 @@ h1, h2, h3, h4, h5, h6 {
 
 .site-nav .feed {
     display: flex;
-    color: var(--accent);
+    color: var(--muted);
     border-bottom: 0;
 }
 
-.site-nav .feed:hover { color: var(--accent-hover); }
+.site-nav .feed:hover { color: var(--accent); }
 
 /* ── The page column ────────────────────────────────────────────────────── */
 
 section.body {
     max-width: var(--measure);
     margin: 0 auto;
-    padding: 76px 20px 84px;
+    padding: 72px 20px 88px;
 }
 
 /* The home page opens higher up so the feed is visible without scrolling. */
-section.body:has(.masthead) { padding-top: 40px; }
+section.body:has(.masthead) { padding-top: 48px; }
 
-.kicker {
-    margin: 0 0 18px;
-    font-size: 10px;
-    letter-spacing: 0.24em;
-    text-transform: uppercase;
+/* Small functional labels, mono and quiet. Sentence case, not shouted. */
+.kicker,
+.label {
+    margin: 0 0 14px;
+    font-family: var(--font-mono);
+    font-size: 12px;
+    font-weight: 450;
+    letter-spacing: 0.01em;
     color: var(--muted);
 }
 
 .kicker-accent { color: var(--accent); }
-
-.label {
-    margin: 0 0 14px;
-    font-size: 10px;
-    letter-spacing: 0.2em;
-    text-transform: uppercase;
-    color: var(--muted);
-}
 
 .hr {
     height: 1px;
@@ -154,46 +187,23 @@ section.body:has(.masthead) { padding-top: 40px; }
     background: var(--border);
 }
 
-/* A hairline parted by a small gold lozenge — the masthead's only ornament. */
-.rule-diamond {
-    display: flex;
-    align-items: center;
-    gap: 14px;
-    margin: 18px 0 16px;
-}
-
-.rule-diamond::before,
-.rule-diamond::after {
-    content: "";
-    flex: 1;
-    height: 1px;
-    background: var(--border);
-}
-
-.rule-diamond span {
-    width: 4px;
-    height: 4px;
-    transform: rotate(45deg);
-    background: var(--accent);
-}
-
 /* ── Home masthead ──────────────────────────────────────────────────────── */
 
-.masthead { text-align: center; }
-
-.masthead .kicker { margin-bottom: 14px; }
+.masthead { text-align: left; }
 
 .masthead h1 {
-    font-size: 52px;
-    line-height: 1;
-    letter-spacing: -0.02em;
+    font-size: 40px;
+    font-weight: 650;
+    letter-spacing: -0.03em;
+    line-height: 1.05;
 }
 
 .lede {
-    margin: 0;
-    font-size: 14.5px;
-    line-height: 1.8;
+    margin: 14px 0 0;
+    font-size: 15px;
+    line-height: 1.7;
     color: var(--muted);
+    max-width: 56ch;
     text-wrap: pretty;
 }
 
@@ -202,7 +212,7 @@ section.body:has(.masthead) { padding-top: 40px; }
 .search {
     display: flex;
     gap: 8px;
-    margin: 26px 0 0;
+    margin: 28px 0 0;
 }
 
 .search-box {
@@ -212,7 +222,10 @@ section.body:has(.masthead) { padding-top: 40px; }
     gap: 9px;
     min-height: 42px;
     padding: 0 12px;
+    background: var(--surface);
     border: 1px solid var(--border-strong);
+    border-radius: var(--radius);
+    transition: border-color 0.15s ease;
 }
 
 .search-box:focus-within { border-color: var(--accent); }
@@ -230,32 +243,33 @@ section.body:has(.masthead) { padding-top: 40px; }
     background: transparent;
     color: var(--text);
     font-family: var(--font-body);
-    font-size: 15px;
+    font-size: 14.5px;
 }
 
 .search-box input[type=search]::placeholder { color: var(--faint); }
 
-/* Outlined, never filled. */
 .search input[type=submit] {
-    font-family: var(--font-display);
-    font-size: 16px;
+    font-family: var(--font-body);
+    font-size: 14px;
+    font-weight: 550;
     line-height: 1.2;
-    padding: 0 22px;
-    color: var(--accent);
-    background: transparent;
-    border: 1px solid var(--accent);
-    border-radius: 0;
+    padding: 0 20px;
+    color: var(--accent-contrast);
+    background: var(--accent);
+    border: 0;
+    border-radius: var(--radius);
     cursor: pointer;
+    transition: background 0.15s ease, transform 0.1s ease;
 }
 
-.search input[type=submit]:hover { background: rgba(225, 173, 102, 0.1); }
-.search input[type=submit]:active { background: rgba(225, 173, 102, 0.18); }
+.search input[type=submit]:hover { background: var(--accent-hover); }
+.search input[type=submit]:active { transform: translateY(1px); }
 
 /* ── Topic run ──────────────────────────────────────────────────────────── */
 
 .topics {
-    margin: 34px 0 0;
-    padding-top: 20px;
+    margin: 36px 0 0;
+    padding-top: 22px;
     border-top: 1px solid var(--border);
 }
 
@@ -264,8 +278,8 @@ section.body:has(.masthead) { padding-top: 40px; }
     display: flex;
     flex-wrap: wrap;
     align-items: baseline;
-    gap: 9px 20px;
-    font-size: 14.5px;
+    gap: 9px 18px;
+    font-size: 14px;
 }
 
 .topic-run > span {
@@ -275,23 +289,26 @@ section.body:has(.masthead) { padding-top: 40px; }
 }
 
 .topic-run a {
-    color: var(--text);
-    border-bottom: 1px solid var(--accent-underline);
+    color: var(--text-body);
+    border-bottom: 1px solid var(--border-strong);
 }
 
-.topic-run a:hover { color: var(--accent); }
+.topic-run a:hover {
+    color: var(--accent);
+    border-bottom-color: var(--accent-underline);
+}
 
 .topic-run .count {
-    font-size: 9.5px;
-    color: var(--accent);
-    vertical-align: super;
+    font-family: var(--font-mono);
+    font-size: 10.5px;
+    color: var(--faint);
 }
 
 .topic-run .more {
     display: inline-flex;
     align-items: center;
     gap: 5px;
-    font-size: 12.5px;
+    font-size: 13px;
     color: var(--muted);
     border-bottom: 0;
 }
@@ -301,35 +318,33 @@ section.body:has(.masthead) { padding-top: 40px; }
 /* ── Listing entries (home, topic pages) ────────────────────────────────── */
 
 .entry {
-    padding: 30px 0;
+    padding: 28px 0;
     border-bottom: 1px solid var(--border);
 }
 
 /* The first entry under a section label sits a little tighter to it. */
-.label + .entry { padding-top: 22px; }
+.label + .entry { padding-top: 20px; }
 
 .entry-meta {
     display: flex;
     align-items: center;
-    gap: 11px;
-    margin: 0 0 9px;
-    font-size: 11px;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
+    gap: 10px;
+    margin: 0 0 8px;
+    font-family: var(--font-mono);
+    font-size: 12px;
     color: var(--muted);
 }
 
-/* The short gold dash between a date and its topic. */
+/* A quiet separator dot between a date and its topic. */
 .entry-meta .tick {
-    width: 16px;
-    height: 1px;
-    background: var(--accent-rule);
+    width: 3px;
+    height: 3px;
+    border-radius: 50%;
+    background: var(--faint);
 }
 
-/* The topic as a small-caps gold link, not a filled pill. */
 .topic,
 .entry-meta a {
-    letter-spacing: 0.12em;
     color: var(--accent);
     border-bottom: 0;
 }
@@ -339,10 +354,9 @@ section.body:has(.masthead) { padding-top: 40px; }
 .entry-meta a:hover { color: var(--accent-hover); }
 
 .entry-title {
-    margin: 0 0 11px;
-    font-size: 31px;
-    line-height: 1.14;
-    letter-spacing: -0.01em;
+    margin: 0 0 9px;
+    font-size: 22px;
+    line-height: 1.25;
 }
 
 .entry-title a {
@@ -350,69 +364,63 @@ section.body:has(.masthead) { padding-top: 40px; }
     border-bottom: 0;
 }
 
-.entry-title a:hover {
-    color: var(--text);
-    border-bottom: 1px solid var(--accent-rule);
-}
+.entry-title a:hover { color: var(--accent-hover); }
 
 /* The excerpt comes out of first_paragraph() as its own <p>. */
 .entry p {
     margin: 0;
-    font-size: 15px;
-    line-height: 1.78;
+    font-size: 14.5px;
+    line-height: 1.7;
     color: var(--text-soft);
-    text-align: justify;
-    hyphens: auto;
 }
 
 .entry p code { font-size: 13px; }
 
-.more-link {
-    margin: 38px 0 0;
-    text-align: center;
-}
+.more-link { margin: 36px 0 0; }
 
 .more-link a {
     display: inline-flex;
     align-items: center;
     gap: 7px;
-    font-family: var(--font-display);
-    font-size: 17px;
-    padding-bottom: 3px;
+    font-size: 15px;
+    font-weight: 500;
+    padding-bottom: 2px;
     border-bottom: 1px solid var(--accent-underline);
 }
 
 /* ── Topic page ─────────────────────────────────────────────────────────── */
 
 .chapter h1 {
-    font-size: 60px;
-    line-height: 1;
-    letter-spacing: -0.02em;
+    font-size: 36px;
+    font-weight: 650;
+    letter-spacing: -0.03em;
+    line-height: 1.05;
 }
 
 .chapter-meta {
-    margin: 18px 0 0;
-    font-size: 13.5px;
+    margin: 14px 0 0;
+    font-family: var(--font-mono);
+    font-size: 13px;
     color: var(--muted);
 }
 
-.chapter + .hr { margin-top: 34px; }
+.chapter + .hr { margin-top: 30px; }
 
-/* On a topic page every entry already carries the topic in its heading. */
-.entry-compact .entry-meta { letter-spacing: 0.12em; }
-
-.entry-compact .entry-title { font-size: 28px; }
+.entry-compact .entry-title { font-size: 20px; }
 
 /* ── All TILs — the register ────────────────────────────────────────────── */
 
 .register {
     display: flex;
     flex-direction: column;
-    gap: 32px;
-    margin-top: 46px;
+    gap: 30px;
+    margin-top: 44px;
 }
 
-.register-group { padding-top: 14px; border-top: 1px solid var(--accent-rule); }
+.register-group {
+    padding-top: 16px;
+    border-top: 1px solid var(--border);
+}
 
 .register-group h2 {
     display: flex;
@@ -420,12 +428,13 @@ section.body:has(.masthead) { padding-top: 40px; }
     gap: 10px;
     margin: 0 0 12px;
     font-weight: 600;
-    font-size: 21px;
-    letter-spacing: 0.01em;
+    font-size: 17px;
+    letter-spacing: -0.01em;
 }
 
 .register-group h2 .count {
-    font-family: var(--font-body);
+    font-family: var(--font-mono);
+    font-weight: 400;
     font-size: 11px;
     color: var(--faint);
 }
@@ -447,34 +456,31 @@ section.body:has(.masthead) { padding-top: 40px; }
 
 .register-group time {
     flex: none;
-    min-width: 72px;
-    font-size: 11px;
+    min-width: 78px;
+    font-family: var(--font-mono);
+    font-size: 11.5px;
     color: var(--faint);
 }
 
 .register-group a {
-    font-size: 14.5px;
+    font-size: 14px;
     color: var(--text-body);
     border-bottom: 0;
 }
 
-.register-group a:hover {
-    color: var(--text);
-    border-bottom: 1px solid var(--accent-rule);
-}
+.register-group a:hover { color: var(--accent-hover); }
 
 /* ── Search results ────────────────────────────────────────────────────── */
 
 .result-count {
-    margin: 20px 0 0;
-    font-size: 11.5px;
-    letter-spacing: 0.16em;
-    text-transform: uppercase;
+    margin: 22px 0 0;
+    font-family: var(--font-mono);
+    font-size: 12.5px;
     color: var(--muted);
 }
 
 .results {
-    margin-top: 32px;
+    margin-top: 28px;
     border-top: 1px solid var(--border);
 }
 
@@ -485,17 +491,16 @@ section.body:has(.masthead) { padding-top: 40px; }
 
 .result h2 {
     margin: 0 0 9px;
-    font-size: 26px;
-    line-height: 1.18;
+    font-size: 19px;
+    line-height: 1.3;
 }
 
 .result h2 a { color: var(--text); border-bottom: 0; }
-.result h2 a:hover { border-bottom: 1px solid var(--accent-rule); }
+.result h2 a:hover { color: var(--accent-hover); }
 
 .result .entry-meta {
     margin: 10px 0 0;
-    font-size: 10.5px;
-    letter-spacing: 0.14em;
+    font-size: 11.5px;
     color: var(--faint);
 }
 
@@ -504,7 +509,7 @@ section.body:has(.masthead) { padding-top: 40px; }
     margin: 0;
     font-family: var(--font-body);
     font-size: 14px;
-    line-height: 1.72;
+    line-height: 1.65;
     color: var(--text-soft);
     white-space: pre-wrap;
     overflow-wrap: break-word;
@@ -516,6 +521,7 @@ section.body:has(.masthead) { padding-top: 40px; }
     background: var(--accent-tint);
     color: var(--accent-tint-text);
     padding: 0 3px;
+    border-radius: 3px;
 }
 
 .no-results {
@@ -529,59 +535,63 @@ section.body:has(.masthead) { padding-top: 40px; }
 .til-meta {
     display: flex;
     align-items: center;
-    gap: 11px;
-    margin: 0 0 18px;
-    font-size: 11px;
-    letter-spacing: 0.14em;
-    text-transform: uppercase;
+    gap: 10px;
+    margin: 0 0 16px;
+    font-family: var(--font-mono);
+    font-size: 12.5px;
     color: var(--muted);
 }
 
-.til-meta .tick { width: 16px; height: 1px; background: var(--accent-rule); }
-.til-meta a { letter-spacing: 0.14em; border-bottom: 0; }
-
-.til h1 {
-    font-size: 48px;
-    line-height: 1.05;
-    letter-spacing: -0.02em;
+.til-meta .tick {
+    width: 3px;
+    height: 3px;
+    border-radius: 50%;
+    background: var(--faint);
 }
 
-.til > .hr { margin: 30px 0 34px; }
+.til-meta a { border-bottom: 0; }
+
+.til h1 {
+    font-size: 32px;
+    font-weight: 650;
+    line-height: 1.15;
+    letter-spacing: -0.025em;
+}
+
+.til > .hr { margin: 26px 0 30px; }
 
 /* Long-form body copy. */
 .til p,
 .til li {
-    font-size: 16.5px;
-    line-height: 1.82;
+    font-size: 15.5px;
+    line-height: 1.75;
     color: var(--text-body);
 }
 
-.til p {
-    margin: 0 0 20px;
-    text-align: justify;
-    hyphens: auto;
-}
+.til p { margin: 0 0 20px; }
 
 .til ul, .til ol { margin: 0 0 20px; padding-left: 1.4em; }
 .til li { margin-bottom: 6px; }
 .til li::marker { color: var(--faint); }
 
-/* Headings inside a TIL sit on a gold hairline. */
 .til h2, .til h3, .til h4 {
-    margin: 48px 0 16px;
-    padding-top: 18px;
-    border-top: 1px solid var(--accent-rule);
+    margin: 44px 0 14px;
     font-weight: 600;
-    line-height: 1.2;
+    line-height: 1.25;
 }
 
-.til h2 { font-size: 25px; }
-.til h3 { font-size: 21px; }
-.til h4 { font-size: 18px; }
+.til h2 {
+    font-size: 21px;
+    padding-top: 18px;
+    border-top: 1px solid var(--border);
+}
+
+.til h3 { font-size: 18px; }
+.til h4 { font-size: 16px; }
 
 /* The generated # anchor beside each heading. */
 .heading-anchor {
-    font-size: 0.7em;
+    font-size: 0.75em;
     color: var(--faint);
     border-bottom: 0;
 }
@@ -590,12 +600,11 @@ section.body:has(.masthead) { padding-top: 40px; }
 
 .til blockquote {
     margin: 0 0 24px;
-    padding: 2px 0 2px 20px;
-    border-left: 2px solid var(--accent);
+    padding: 2px 0 2px 18px;
+    border-left: 2px solid var(--accent-rule);
     color: var(--muted);
-    font-style: italic;
-    font-size: 15.5px;
-    line-height: 1.78;
+    font-size: 15px;
+    line-height: 1.7;
 }
 
 .til blockquote p {
@@ -603,7 +612,6 @@ section.body:has(.masthead) { padding-top: 40px; }
     font-size: inherit;
     line-height: inherit;
     color: inherit;
-    text-align: left;
 }
 
 .til blockquote p:last-child { margin-bottom: 0; }
@@ -613,8 +621,10 @@ section.body:has(.masthead) { padding-top: 40px; }
 pre, code, kbd, samp { font-family: var(--font-mono); }
 
 code {
-    font-size: 0.85em;
+    font-size: 0.86em;
     background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 4px;
     padding: 1px 5px;
 }
 
@@ -622,7 +632,8 @@ pre {
     margin: 0 0 24px;
     background: var(--surface);
     border: 1px solid var(--surface-border);
-    padding: 18px 20px;
+    border-radius: var(--radius);
+    padding: 16px 18px;
     font-size: 13px;
     line-height: 1.65;
     color: var(--text-body);
@@ -632,6 +643,7 @@ pre {
 
 pre code {
     background: none;
+    border: 0;
     padding: 0;
     font-size: inherit;
 }
@@ -651,29 +663,25 @@ a, pre, code { overflow-wrap: break-word; }
     margin: 0 0 24px;
     background: var(--surface);
     border: 1px solid var(--surface-border);
+    border-radius: var(--radius);
+    overflow: hidden;
 }
 
 .highlight > pre {
     margin: 0;
     border: 0;
-    padding: 16px 20px 18px;
+    border-radius: 0;
+    padding: 14px 18px 16px;
 }
 
 .highlight::before {
     content: "code";
     display: block;
-    padding: 8px 20px;
+    padding: 7px 18px;
     border-bottom: 1px solid var(--surface-border);
     font-family: var(--font-mono);
-    font-size: 9.5px;
-    letter-spacing: 0.18em;
-    text-transform: uppercase;
-    color: var(--accent);
-    /* The short rule at the right end of the strip. */
-    background-image: linear-gradient(var(--surface-border), var(--surface-border));
-    background-repeat: no-repeat;
-    background-position: right 20px center;
-    background-size: 26px 1px;
+    font-size: 11px;
+    color: var(--muted);
 }
 
 /* One rule per language: CSS cannot read a class name, so the label is
@@ -708,11 +716,10 @@ a, pre, code { overflow-wrap: break-word; }
 
 img { display: block; max-width: 100%; height: auto; }
 
-/* Photographs sit matted, like a tipped-in plate. */
 .til img {
     margin: 0 0 24px;
-    border: 6px solid var(--surface);
-    outline: 1px solid var(--border);
+    border: 1px solid var(--border-strong);
+    border-radius: var(--radius);
 }
 
 .til hr {
@@ -737,11 +744,9 @@ th, td {
 }
 
 th {
-    font-family: var(--font-display);
-    font-weight: 600;
-    font-size: 11px;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
+    font-family: var(--font-mono);
+    font-weight: 500;
+    font-size: 12px;
     color: var(--muted);
 }
 
@@ -758,12 +763,9 @@ audio { width: 100%; margin: 0 0 24px; }
 /* Both of these sit inside .til, so they have to out-specify .til p. */
 .til-footer .label {
     margin: 0 0 16px;
-    font-size: 10px;
+    font-size: 12px;
     line-height: 1.6;
-    letter-spacing: 0.2em;
-    text-transform: uppercase;
     color: var(--muted);
-    text-align: left;
 }
 
 ul.related {
@@ -772,59 +774,68 @@ ul.related {
     padding: 0;
     display: flex;
     flex-direction: column;
-    gap: 11px;
+    gap: 10px;
 }
 
 ul.related li {
     display: flex;
     align-items: baseline;
     gap: 14px;
-    font-size: 14.5px;
+    font-size: 14px;
 }
 
 ul.related time {
     flex: none;
-    min-width: 76px;
-    font-size: 11px;
+    min-width: 78px;
+    font-family: var(--font-mono);
+    font-size: 11.5px;
     color: var(--faint);
 }
 
 ul.related .topic { display: none; }
 
 ul.related a {
-    color: var(--text);
-    border-bottom: 1px solid rgba(225, 173, 102, 0.35);
+    color: var(--text-body);
+    border-bottom: 0;
 }
+
+ul.related a:hover { color: var(--accent-hover); }
 
 .created,
 .til .created {
     margin: 28px 0 0;
+    font-family: var(--font-mono);
     font-size: 11.5px;
     line-height: 1.7;
     color: var(--faint);
-    text-align: left;
-    hyphens: none;
+}
+
+/* ── Reduced motion ────────────────────────────────────────────────────── */
+
+@media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+        transition-duration: 0.01ms !important;
+        animation-duration: 0.01ms !important;
+    }
 }
 
 /* ── Narrow screens ───────────────────────────────────────────────────── */
 
 @media (max-width: 640px) {
-    body { font-size: 15.5px; }
+    body { font-size: 15px; }
 
     .site-nav { padding: 14px 20px; }
 
-    section.body { padding: 48px 20px 64px; }
+    section.body { padding: 44px 20px 64px; }
 
-    .masthead h1 { font-size: 46px; }
-    .chapter h1 { font-size: 44px; }
-    .til h1 { font-size: 34px; }
-    .entry-title { font-size: 25px; }
-    .entry-compact .entry-title { font-size: 23px; }
-    .result h2 { font-size: 22px; }
+    .masthead h1 { font-size: 32px; }
+    .chapter h1 { font-size: 30px; }
+    .til h1 { font-size: 26px; }
+    .entry-title { font-size: 19px; }
+    .entry-compact .entry-title { font-size: 18px; }
+    .result h2 { font-size: 17px; }
 
-    .til p, .til li { font-size: 16px; }
-    .entry p { text-align: left; }
-    .til p { text-align: left; }
+    .til p, .til li { font-size: 15px; }
 
     .search { flex-wrap: wrap; }
     .search-box { flex-basis: 100%; }

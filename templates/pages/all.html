@@ -6,8 +6,10 @@
 {% set til_count = sql("select count(*) from TIL", database="tils")[0][0] %}
 {% set topic_count = sql("select count(distinct topic) from til", database="tils")[0][0] %}
 
-<h1>All notes</h1>
-<p class="kicker kicker-accent" style="margin: 16px 0 0">{{ til_count }} notes &middot; {{ topic_count }} topics &middot; newest topic first</p>
+<header class="chapter">
+    <h1>All notes</h1>
+    <p class="chapter-meta">{{ til_count }} notes across {{ topic_count }} topics, newest topic first</p>
+</header>
 
 <div class="register">
 {% for row in sql("select topic from til group by topic order by max(created_utc) desc", database="tils") %}

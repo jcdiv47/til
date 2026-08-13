@@ -14,7 +14,6 @@
 {% endif %}
 
 <header class="chapter">
-    <p class="kicker">Topic</p>
     <h1>{{ topic }}</h1>
     <p class="chapter-meta">{{ tils|length }} note{{ "s" if tils|length > 1 else "" }} &middot; <a href="/tils/feed_by_topic.atom?topic={{ topic }}" title="Atom feed">Atom feed for {{ topic }}</a></p>
 </header>
