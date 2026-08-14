@@ -18,5 +18,5 @@ clear
 ```
 
 > [!NOTE]
->  If that works, remove any TERMINFO or TERMINFO_DIRS assignments from ~/.bashrc, ~/.profile, or ~/.zshrc.
+>  If the above works, remove any TERMINFO or TERMINFO_DIRS assignments from ~/.bashrc, ~/.profile, or ~/.zshrc.
 
