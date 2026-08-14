@@ -46,6 +46,14 @@
     /* Solid button: dark text on the accent fill clears WCAG AA. */
     --accent-contrast: #14100a;
 
+    /* Callouts. The one place a second hue is allowed: the alert type is the
+       information, so each gets its own, desaturated to sit in the ground. */
+    --alert-note: #6ea8fe;
+    --alert-tip: #64c48a;
+    --alert-important: #b78ce0;
+    --alert-warning: var(--accent);
+    --alert-caution: #ef7d75;
+
     --font-display: "Geist", system-ui, -apple-system, "Segoe UI", sans-serif;
     --font-body: "Geist", system-ui, -apple-system, "Segoe UI", sans-serif;
     --font-mono: "Geist Mono", ui-monospace, SFMono-Regular, "SF Mono", Menlo,
@@ -615,6 +623,46 @@ section.body:has(.masthead) { padding-top: 48px; }
 }
 
 .til blockquote p:last-child { margin-bottom: 0; }
+
+/* GitHub alerts — > [!NOTE] and friends, rendered by the markdown API in gfm
+   mode as .markdown-alert divs. Same left rule as a blockquote, tinted by
+   type, with the Octicon and label the API inlines as the title row. */
+.til .markdown-alert {
+    margin: 0 0 24px;
+    padding: 2px 0 2px 18px;
+    border-left: 2px solid var(--alert-colour);
+    color: var(--text-body);
+    font-size: 15px;
+    line-height: 1.7;
+}
+
+.til .markdown-alert p {
+    margin: 0 0 10px;
+    font-size: inherit;
+    line-height: inherit;
+}
+
+.til .markdown-alert p:last-child { margin-bottom: 0; }
+
+.til .markdown-alert-title {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    color: var(--alert-colour);
+    font-family: var(--font-mono);
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+}
+
+.til .markdown-alert-title .octicon { fill: currentColor; flex: none; }
+
+.til .markdown-alert-note      { --alert-colour: var(--alert-note); }
+.til .markdown-alert-tip       { --alert-colour: var(--alert-tip); }
+.til .markdown-alert-important { --alert-colour: var(--alert-important); }
+.til .markdown-alert-warning   { --alert-colour: var(--alert-warning); }
+.til .markdown-alert-caution   { --alert-colour: var(--alert-caution); }
 
 /* ── Code ──────────────────────────────────────────────────────────────── */
 
