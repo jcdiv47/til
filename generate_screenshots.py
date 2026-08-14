@@ -1,5 +1,6 @@
 import hashlib
 import json
+import os
 import pathlib
 import subprocess
 import sqlite_utils
@@ -8,6 +9,13 @@ import zlib
 
 root = pathlib.Path(__file__).parent.resolve()
 TMP_PATH = pathlib.Path(tempfile.gettempdir())
+
+# Screenshots live in a Cloudflare R2 bucket, reached through its S3-compatible API
+S3_BUCKET = os.environ.get("S3_BUCKET", "til")
+S3_ENDPOINT_URL = os.environ.get(
+    "S3_ENDPOINT_URL",
+    "https://67eab20473109e6b27c94a74f4a31dbe.r2.cloudflarestorage.com",
+)
 
 # Change the following tuple manually any time the templates have changed
 # to a point that all of the screenshots need to be re-taken
@@ -110,7 +118,14 @@ SHOT_HASH_ELEMENTS = (
 
 def s3_contents():
     proc = subprocess.run(
-        ["s3-credentials", "list-bucket", "til.simonwillison.net"], capture_output=True
+        [
+            "s3-credentials",
+            "list-bucket",
+            S3_BUCKET,
+            "--endpoint-url",
+            S3_ENDPOINT_URL,
+        ],
+        capture_output=True,
     )
     return [item["Key"] for item in json.loads(proc.stdout)]
 
@@ -169,9 +184,11 @@ def generate_screenshots(root):
                 [
                     "s3-credentials",
                     "put-object",
-                    "til.simonwillison.net",
+                    S3_BUCKET,
                     shot_filename,
                     "-",
+                    "--endpoint-url",
+                    S3_ENDPOINT_URL,
                     "--content-type",
                     "image/jpeg",
                     "--silent",

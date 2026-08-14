@@ -12,18 +12,20 @@
 {% block title %}{{ til.title }} | Jack's TILs{% endblock %}
 
 {% block extra_head %}
+{# Public read URL for the Cloudflare R2 bucket that holds the screenshots.
+   This is the bucket's public r2.dev URL, not its S3 API endpoint. #}
+{% set screenshot_base = "https://pub-d3821ae01b864e6b816b93f9059c3747.r2.dev" %}
 <link rel="stylesheet" href="/static/syntax-dark.css">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:creator" content="@simonw">
 <meta name="twitter:title" content="{{ til.title }}">
 <meta name="twitter:description" content="{{ til.summary }}">
-<meta name="twitter:image" content="https://s3.amazonaws.com/til.simonwillison.net/{{ til.shot_hash }}.jpg">
+<meta name="twitter:image" content="{{ screenshot_base }}/{{ til.shot_hash }}.jpg">
 <meta name="twitter:image:alt" content="Screenshot: {{ til.title  }} - {{ til.summary }}">
-<meta property="og:url" content="https://til.simonwillison.net/{{ til.topic }}/{{ til.slug }}">
+<meta property="og:url" content="https://til.jiaqicai.com/{{ til.topic }}/{{ til.slug }}">
 <meta property="og:type" content="article">
 <meta property="og:title" content="{{ til.title }}">
 <meta property="og:description" content="{{ til.summary }}">
-<meta property="og:image" content="https://s3.amazonaws.com/til.simonwillison.net/{{ til.shot_hash }}.jpg">
+<meta property="og:image" content="{{ screenshot_base }}/{{ til.shot_hash }}.jpg">
 <meta property="og:image:alt" content="Screenshot: {{ til.title  }} - {{ til.summary }}">
 <meta property="og:image:width" content="800">
 <meta property="og:image:height" content="400">
@@ -64,7 +66,7 @@ document.addEventListener('DOMContentLoaded', () => {
   </ul>
 {% endif %}
 
-<p class="created">Created {{ til.created }}{% if til.created != til.updated %}, updated {{ til.updated }} &middot; <a href="{{ til.url|replace("https://github.com/simonw/til/blob/", "https://github.com/simonw/til/commits/") }}">History</a>{% endif %} &middot; <a href="{{ til.url }}">Edit</a></p>
+<p class="created">Created {{ til.created }}{% if til.created != til.updated %}, updated {{ til.updated }} &middot; <a href="{{ til.url|replace("https://github.com/jcdiv47/til/blob/", "https://github.com/jcdiv47/til/commits/") }}">History</a>{% endif %} &middot; <a href="{{ til.url }}">Edit</a></p>
 </div>
 </article>
 

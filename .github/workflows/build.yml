@@ -5,6 +5,11 @@ on:
     branches:
     - main
 
+env:
+  # Cloudflare R2, reached through its S3-compatible API
+  S3_BUCKET: til
+  S3_ENDPOINT_URL: https://67eab20473109e6b27c94a74f4a31dbe.r2.cloudflarestorage.com
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -41,7 +46,12 @@ jobs:
     - name: Download previous database unless REBUILD in commit message
       if: |-
         !contains(github.event.head_commit.message, 'REBUILD')
-      run: curl --fail -o main/tils.db https://s3.amazonaws.com/til.simonwillison.net/tils.db
+      env:
+        AWS_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
+        AWS_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
+      run: |-
+        s3-credentials get-object "$S3_BUCKET" tils.db -o main/tils.db \
+          --endpoint-url "$S3_ENDPOINT_URL"
       continue-on-error: true
     - name: Build database
       env:
@@ -52,33 +62,53 @@ jobs:
     - name: Soundness check
       run: |-
         cd main
-        datasette . --get / | grep "Simon Willison: TIL"
+        datasette . --get / | grep "Jack: TIL"
     - name: Generate missing screenshots
       env:
-        AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-        AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        AWS_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
+        AWS_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
       run: |-
         cd main
         python generate_screenshots.py
         sqlite-utils vacuum tils.db
-    # - name: Calculate embeddings and document similarity
-    #   env:
-    #     OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
-    #   run: |-
-    #     cd main
-    #     # Fetch embeddings for documents that need them
-    #     openai-to-sqlite embeddings tils.db \
-    #      --sql 'select path, title, topic, body from til' || true
-    #     # Now calculate and save similarities
-    #     if sqlite-utils rows tils.db similarities --limit 1; then
-    #       # Table exists already, so only calculate new similarities
-    #       openai-to-sqlite similar tils.db \
-    #         $(git diff --name-only HEAD~10 HEAD | grep '/.*\.md$' | sed 's/\//_/g') \
-    #         --save --recalculate-for-matches --print || true
-    #     else
-    #       # Table does not exist, calculate for everything
-    #       openai-to-sqlite similar tils.db --all --save
-    #     fi
+    - name: Calculate embeddings and document similarity
+      env:
+        OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
+        OPENROUTER_HTTP_REFERER: https://til.jiaqicai.com/
+        OPENROUTER_APP_NAME: Jack's TIL related content
+      run: |-
+        cd main
+        python .agents/skills/openrouter-til-embeddings/scripts/generate_embeddings.py tils.db
+        openai-to-sqlite similar tils.db --all --save
+    - name: Verify embeddings and similarities
+      run: |-
+        cd main
+        python - <<'PY'
+        import sqlite3
+
+        conn = sqlite3.connect("tils.db")
+        tables = {
+            row[0]
+            for row in conn.execute(
+                "select name from sqlite_master where type = 'table'"
+            )
+        }
+        assert "embeddings" in tables, "embeddings table is missing"
+        assert "similarities" in tables, "similarities table is missing"
+        til_count = conn.execute("select count(*) from til").fetchone()[0]
+        embedding_count = conn.execute(
+            "select count(*) from embeddings"
+        ).fetchone()[0]
+        similarity_count = conn.execute(
+            "select count(*) from similarities"
+        ).fetchone()[0]
+        assert embedding_count == til_count, (embedding_count, til_count)
+        assert similarity_count > 0, "similarities table is empty"
+        print(
+            f"Verified {embedding_count} embeddings and "
+            f"{similarity_count} similarities"
+        )
+        PY
     - name: Update README
       run: |-
         cd main
@@ -92,22 +122,23 @@ jobs:
         git config --global user.name "README-bot"
         git diff --quiet || (git add README.md && git commit -m "Updated README")
         git push
-    - name: Upload latest tils.db to the S3 bucket
+    - name: Upload latest tils.db to the R2 bucket
       env:
-        AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-        AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        AWS_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
+        AWS_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
       run: |-
-        s3-credentials put-object til.simonwillison.net tils.db main/tils.db
+        s3-credentials put-object "$S3_BUCKET" tils.db main/tils.db \
+          --endpoint-url "$S3_ENDPOINT_URL"
     - name: Install Fly
       run: |
         curl -L https://fly.io/install.sh | sh
     - name: Deploy Datasette using Fly
       env:
-        FLY_API_TOKEN: ${{ secrets.FLY_TOKEN }}
+        FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
       run: |-
         cd main
         PATH=$PATH:/home/runner/.fly/bin/ datasette publish fly tils.db \
-          --app simonw-tils \
+          --app jack-tils \
           --metadata metadata.yaml \
           --static static:static \
           --install datasette-template-sql \

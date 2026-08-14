@@ -1,6 +1,6 @@
 title: Today I Learned
-about: simonw/til
-about_url: https://github.com/simonw/til
+about: jcdiv47/til
+about_url: https://github.com/jcdiv47/til
 plugins:
   datasette-redirects:
     301:
@@ -38,16 +38,16 @@ databases:
         order by
           til_fts.rank limit 40
       feed:
-        title: Simon Willison TIL
+        title: Jack TIL
         sql: |-
           SELECT
-            'tag:til.simonwillison.net,2020-04-30:' || path as atom_id,
+            'tag:til.jiaqicai.com,2020-04-30:' || path as atom_id,
             title as atom_title,
-            'https://til.simonwillison.net/' || topic || '/' || slug as atom_link,
+            'https://til.jiaqicai.com/' || topic || '/' || slug as atom_link,
             created_utc as atom_updated,
             html as atom_content_html,
-            'Simon Willison' as atom_author_name,
-            'https://simonwillison.net/' as atom_author_uri
+            'Jack' as atom_author_name,
+            'https://til.jiaqicai.com/' as atom_author_uri
           FROM
             til
           order by
@@ -55,16 +55,16 @@ databases:
           limit
             15
       feed_by_topic:
-        title: Simon Willison TIL for topic
+        title: Jack TIL for topic
         sql: |-
           SELECT
-            'tag:til.simonwillison.net,2020-04-30:' || path as atom_id,
+            'tag:til.jiaqicai.com,2020-04-30:' || path as atom_id,
             title as atom_title,
-            'https://til.simonwillison.net/' || topic || '/' || slug as atom_link,
+            'https://til.jiaqicai.com/' || topic || '/' || slug as atom_link,
             created_utc as atom_updated,
             html as atom_content_html,
-            'Simon Willison' as atom_author_name,
-            'https://simonwillison.net/' as atom_author_uri
+            'Jack' as atom_author_name,
+            'https://til.jiaqicai.com/' as atom_author_uri
           FROM
             til
           where
