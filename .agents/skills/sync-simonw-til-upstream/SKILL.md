@@ -5,7 +5,9 @@ description: Review and selectively import application code, dependency, templat
 
 # Sync code from simonw/til
 
-Treat `simonw/til` as a source of selectively adopted patches, not as a branch to merge wholesale. This fork has independent content, branding, styles, deployment settings, and embedding infrastructure.
+Treat `simonw/til` as a source of selectively adopted patches, not as a branch to merge wholesale. This fork has independent branding, styles, deployment settings, and embedding infrastructure, and its content diverges from upstream.
+
+Upstream history through commit `a16711f2157fb5908b003a16792538ed9c9bcb00` (2026-07-29) is already fully incorporated into the fork's history, including upstream content from before the divergence. The review process in this skill applies only to upstream commits after that point.
 
 Never merge or rebase the fork onto upstream `main`; that would import upstream content. Never cherry-pick every candidate automatically.
 
@@ -128,8 +130,10 @@ Do not describe a minimum-version constraint as a lock-file update—this projec
 Confirm the worktree is clean immediately before applying:
 
 ```bash
-test -z "$(git status --porcelain)"
+test -z "$(git status --porcelain --untracked-files=no)"
 ```
+
+Untracked files are acceptable unless the patch being applied creates the same paths.
 
 For a clean, fully applicable commit:
 
@@ -189,6 +193,8 @@ git config --local til.upstreamCodeReviewed "$target"
 
 Advancing the checkpoint means skipped commits were intentionally reviewed and should not be offered again. Show the user the new checkpoint. Do not advance it if review stopped early.
 
+If the checkpoint is unset and the fork is already up to date with upstream (no code candidates in the range), initialize it to the current `upstream/main` tip so future reviews only surface new commits.
+
 ## Cadence
 
-Recommend checking monthly or every two to three months. Upstream core changes are infrequent: 15 core/site-code commits occurred in 2024, 7 in 2025, and none in the repository's 2026 history through July. Security and directly relevant dependency fixes can be handled sooner.
+Recommend checking monthly or every two to three months. Upstream core changes are infrequent: historically roughly 7–15 core/site-code commits per year, often with none for months at a time. Security and directly relevant dependency fixes can be handled sooner.
