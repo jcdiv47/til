@@ -31,6 +31,8 @@ export OPENROUTER_API_KEY="..."
 
 `--rebuild` drops both `embeddings` and `similarities` before regenerating embeddings. API calls are billable through OpenRouter.
 
+The script truncates each combined title/topic/body input to 8,000 characters by default so code-heavy articles stay below the model's 8,192-token input limit. Override this with `--max-input-chars` only when the selected model supports a different limit.
+
 ## Incremental refresh
 
 Without `--rebuild`, the script skips IDs already present in `embeddings`:

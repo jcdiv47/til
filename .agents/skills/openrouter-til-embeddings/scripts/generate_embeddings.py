@@ -13,6 +13,7 @@ import httpx
 DEFAULT_MODEL = "openai/text-embedding-3-small"
 DEFAULT_ENDPOINT = "https://openrouter.ai/api/v1/embeddings"
 EXPECTED_DIMENSIONS = 1536
+DEFAULT_MAX_INPUT_CHARS = 8000
 
 
 def parse_args():
@@ -25,6 +26,12 @@ def parse_args():
     parser.add_argument("database", nargs="?", default="tils.db")
     parser.add_argument("--model", default=DEFAULT_MODEL)
     parser.add_argument("--batch-size", type=int, default=50)
+    parser.add_argument(
+        "--max-input-chars",
+        type=int,
+        default=DEFAULT_MAX_INPUT_CHARS,
+        help="Truncate each document to this many characters (default: 8000)",
+    )
     parser.add_argument("--rebuild", action="store_true", help="Drop embeddings and similarities first")
     parser.add_argument("--endpoint", default=DEFAULT_ENDPOINT)
     return parser.parse_args()
@@ -38,7 +45,10 @@ def request_embeddings(client, endpoint, headers, model, texts, attempts=5):
             json={"model": model, "input": texts},
         )
         if response.status_code not in (429, 500, 502, 503, 504):
-            response.raise_for_status()
+            if response.is_error:
+                raise RuntimeError(
+                    f"OpenRouter returned {response.status_code}: {response.text}"
+                )
             return response.json()
         if attempt == attempts - 1:
             response.raise_for_status()
@@ -57,6 +67,8 @@ def main():
     args = parse_args()
     if args.batch_size < 1:
         raise SystemExit("--batch-size must be at least 1")
+    if args.max_input_chars < 1:
+        raise SystemExit("--max-input-chars must be at least 1")
 
     api_key = os.environ.get("OPENROUTER_API_KEY")
     if not api_key:
@@ -102,7 +114,17 @@ def main():
         with httpx.Client(timeout=120) as client:
             for batch in chunks(rows, args.batch_size):
                 ids = [row[0] for row in batch]
-                texts = [" ".join(value or "" for value in row[1:]) for row in batch]
+                full_texts = [" ".join(value or "" for value in row[1:]) for row in batch]
+                texts = [text[: args.max_input_chars] for text in full_texts]
+                truncated = sum(
+                    len(text) > args.max_input_chars for text in full_texts
+                )
+                if truncated:
+                    print(
+                        f"Truncated {truncated} inputs in this batch to "
+                        f"{args.max_input_chars} characters",
+                        file=sys.stderr,
+                    )
                 payload = request_embeddings(
                     client, args.endpoint, headers, args.model, texts
                 )
