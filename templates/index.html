@@ -17,6 +17,9 @@
     <input type="submit" value="Search">
 </form>
 
+<div id="search-results" aria-live="polite" hidden></div>
+
+<div id="browse">
 <div class="topics">
     <p class="label">Browse by topic</p>
     <div class="topic-run">
@@ -38,5 +41,8 @@
 {% endfor %}
 
 <p class="more-link"><a href="/all">Browse all {{ til_count }} notes <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M5 12h14"></path><path d="m12 5 7 7-7 7"></path></svg></a></p>
+</div>
 
 {% endblock %}
+
+{% block extra_script %}<script src="/static/search.js" defer></script>{% endblock %}

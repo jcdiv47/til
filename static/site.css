@@ -538,6 +538,15 @@ section.body:has(.masthead) { padding-top: 48px; }
     color: var(--muted);
 }
 
+/* Search-as-you-type: dim the previous results while the next set is in
+   flight, but only once the wait is long enough to notice. */
+#search-results { transition: opacity 120ms ease-out; }
+#search-results.is-searching { opacity: 0.55; transition-delay: 180ms; }
+
+@media (prefers-reduced-motion: reduce) {
+    #search-results { transition: none; }
+}
+
 /* ── A single TIL ──────────────────────────────────────────────────────── */
 
 .til-meta {
