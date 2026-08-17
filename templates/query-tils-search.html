@@ -7,11 +7,12 @@
 <form class="search" style="margin-top: 0" action="/tils/search">
     <span class="search-box">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="8"></circle><path d="m21 21-4.3-4.3"></path></svg>
-        <input type="search" name="q" value="{{ q }}">
+        <input type="search" name="q" value="{{ q }}" autofocus>
     </span>
     <input type="submit" value="Search">
 </form>
 
+<div id="search-results" aria-live="polite">
 {% if q %}
     <p class="result-count">{{ rows|length }} match{{ "es" if rows|length != 1 else "" }} for &ldquo;{{ q }}&rdquo;</p>
 {% endif %}
@@ -29,5 +30,8 @@
     </article>
 {% endfor %}
 </div>
+</div>
 
 {% endblock %}
+
+{% block extra_script %}<script src="/static/search.js" defer></script>{% endblock %}

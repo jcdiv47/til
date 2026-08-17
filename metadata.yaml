@@ -24,7 +24,10 @@ databases:
       search: |
         select
           til_fts.rank,
-          til.*,
+          til.topic,
+          til.slug,
+          til.title,
+          til.created,
           snippet(til_fts, -1, 'b4de2a49c8', '8c94a2ed4b', '...', 60) as snippet
         from
           til
